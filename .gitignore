@@ -1,0 +1,18 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+.env
+
+mongodb atlas connect to nandrianana dev : 
+username: hrandri30
+Password: YUMCNta6vJv7lLU2
+current IP address (84.254.167.64)
+mongodb lien : mongodb+srv://hrandri30:YUMCNta6vJv7lLU2@nandrianinadev.c1uxmgt.mongodb.net/?retryWrites=true&w=majority&appName=NandrianinaDev
+
+Connect to GoogleSingIn: 
+username: hrandri30
+Password: sCRIuvmnD2661Vs9
+current IP address (84.254.167.64)
+mongodb+srv://hrandri30:sCRIuvmnD2661Vs9@googlesingin.yf0pnkz.mongodb.net/?retryWrites=true&w=majority&appName=GoogleSingIn
