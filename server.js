@@ -73,7 +73,7 @@ const fs = require("fs");
 const session = require("express-session");
 const router = require("./routers/authRouters");
 const MongoDBSession = require("connect-mongodb-session")(session);
-// const mongodbUrl = "mongodb://localhost:27017/examenDtc";
+const mongodbUrl = "mongodb://localhost:27017/examenDtc";
 
 const app = express();
 app.use(express.json());
@@ -102,10 +102,10 @@ console.log("Views directory set to:", viewsDirectory);
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname + "/build/index.html"));
 // });
-const mongodbUri = process.env.MONGODB_URi;
+// const mongodbUri = process.env.MONGODB_URi;
 
 const store = new MongoDBSession({
-  uri: mongodbUri,
+  uri: mongodbUrl,
   collection: "mySessions",
 });
 app.use(
@@ -125,7 +125,7 @@ app.use(
 app.use(router);
 
 mongoose
-  .connect(mongodbUri, {
+  .connect(mongodbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
