@@ -127,10 +127,7 @@ app.use(
 app.use(router);
 
 mongoose
-  .connect(mongodbUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongodbUri)
   .then(() => {
     console.log("CONNECTED TO MONGODB");
     app.listen(4000, () => {
