@@ -104,10 +104,8 @@ console.log("Views directory set to:", viewsDirectory);
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname + "/build/index.html"));
 // });
-const mongodbUri = process.env.MONGODB_URi;
-
 const store = new MongoDBSession({
-  uri: mongodbUri,
+  uri: process.env.MONGODB_URi,
   collection: "mySessions",
 });
 app.use(
@@ -127,7 +125,10 @@ app.use(
 app.use(router);
 
 mongoose
-  .connect(mongodbUri)
+  .connect(process.env.MONGODB_URi, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("CONNECTED TO MONGODB");
     app.listen(4000, () => {

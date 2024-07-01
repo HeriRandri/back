@@ -178,6 +178,7 @@ module.exports.article_get = async (req, res) => {
 
 module.exports.devenir_admin = async (req, res, next) => {
   const user = req.session.user;
+
   console.log("User session in devenir_admin:", user);
   try {
     const userId = await User.findById(user);
