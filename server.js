@@ -73,6 +73,8 @@ const fs = require("fs");
 const session = require("express-session");
 const router = require("./routers/authRouters");
 const MongoDBSession = require("connect-mongodb-session")(session);
+require("dotenv").config();
+
 // const mongodbUrl = "mongodb://localhost:27017/examenDtc";
 
 const app = express();
