@@ -104,40 +104,39 @@ console.log("Views directory set to:", viewsDirectory);
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname + "/build/index.html"));
 // });
-// const store = new MongoDBSession({
-//   uri: process.env.MONGODB_URi,
-//   collection: "mySessions",
-// });
-// app.use(
-//   session({
-//     secret: "secrets",
-//     resave: false,
-//     saveUninitialized: false,
-//     store: store,
-//     cookie: {
-//       maxAge: 1000 * 60 * 60 * 24,
-//       secure: false,
-//       httpOnly: true,
-//     },
-//   })
-// );
+const mongodbUri = process.env.MONGODB_URi;
+console.log("url de mongodb", mongodbUri);
+const store = new MongoDBSession({
+  uri: mongodbUri,
+  collection: "mySessions",
+});
+app.use(
+  session({
+    secret: "secrets",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+      secure: false,
+      httpOnly: true,
+    },
+  })
+);
 
 app.use(router);
 
-// mongoose
-//   .connect(process.env.MONGODB_URi, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log("CONNECTED TO MONGODB");
-app.listen(4000, () => {
-  console.log("Server running at http://localhost:4000");
-});
-// })
-// .catch((err) => {
-//   console.log(`Error connecting to MongoDB: ${err}`);
-// });
+mongoose
+  .connect(mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("CONNECTED TO MONGODB");
+    app.listen(4000, () => {
+      console.log("Server running at http://localhost:4000");
+    });
+  })
+  .catch((err) => {
+    console.log(`Error connecting to MongoDB: ${err}`);
+  });
 
 // List files in views directory for debugging
 fs.readdir(viewsDirectory, (err, files) => {
