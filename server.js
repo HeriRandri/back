@@ -127,7 +127,9 @@ app.use(
 app.use(router);
 
 mongoose
-  .connect(uri)
+  .connect(uri, {
+    ssl: true,
+  })
   .then(() => {
     console.log("CONNECTED TO MONGODB");
     app.listen(4000, () => {
