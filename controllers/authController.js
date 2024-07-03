@@ -157,12 +157,13 @@ module.exports.article_get = async (req, res) => {
   const { category } = req.query;
   const user = req.session.user;
   const useService = new UserService(user);
-  if (category === "world" || category === "health") {
-    if (!useService.hasAdminAccess()) {
-      return res.status(403).json({
-        message: "Accès refusé. Vous n'avez pas les permissions nécessaires.",
-      });
-    }
+  if (
+    (category === "world" || category === "health") &&
+    !useService.hasAdminAccess()
+  ) {
+    return res.status(403).json({
+      message: "Accès refusé. Vous n'avez pas les permissions nécessaires.",
+    });
   }
 
   const key = process.env.NYT_API_KEY;

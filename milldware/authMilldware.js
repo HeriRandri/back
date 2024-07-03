@@ -1,6 +1,7 @@
 // const jwt = require("jsonwebtoken");
 
-// const authenticateToken = (req, res, next) => {
+// const authenticateToken =(requiredRole)=>{
+// return (req, res, next) => {
 //   const authHeader = req.headers["authorization"];
 //   const token = authHeader && authHeader.split(" ")[1];
 
@@ -13,9 +14,13 @@
 //       return res.sendStatus(403); // Forbidden
 //     }
 //     req.user = user;
+// if (requiredRole && req.user.role !== requiredRole) {
+//   return res.status(403).json({ error: 'Accès refusé. Vous n\'avez pas le rôle requis.' });
+// }
 //     next();
 //   });
 // };
+// }
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.user) {
