@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const session = require("express-session");
 const { decode } = require("jsonwebtoken");
+const { findUseById, saveUser } = require("../model/saveUser");
 
 /**
  *
@@ -23,8 +24,9 @@ module.exports.login_get = (req, res) => {
 module.exports.signup_post = async (req, res) => {
   const { username, email, password, role } = req.body;
 
-  let user = await User.findOne({ email });
-  if (user) {
+  // let user = await User.findOne({ email });
+  let users = findUseById(email);
+  if (users) {
     return res.status(409).send("That email is already registered.");
   }
 
@@ -32,14 +34,15 @@ module.exports.signup_post = async (req, res) => {
   const salt = await bcrypt.genSalt();
   const hashPwd = await bcrypt.hash(password, salt);
 
-  user = new User({
-    username,
-    email,
-    password: hashPwd,
-    role: role || "user",
-  });
+  // user = new User({
+  //   username,
+  //   email,
+  //   password: hashPwd,
+  //   role: role || "user",
+  // });
 
-  await user.save();
+  saveUser({ username, email, password: hashPwd, role: "user" });
+  // await user.save();
   res.redirect("/login");
 };
 
@@ -63,16 +66,18 @@ const generateAccessToken = (user) => {
 module.exports.login_post = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    // const user = await User.findOne({ email });
+    const user = findUseById(email);
+    if (!user) {
+      return res.status(404).json("User not found");
+    }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(404).json("Invalid Password");
     }
 
-    if (user) {
-      req.session.user = user;
-      res.json({ message: "Login successful", auth: true });
-    }
+    req.session.user = user;
+    res.json({ message: "Login successful", auth: true });
   } catch (error) {
     res.status(500).json("Internan Server Error");
   }
@@ -121,35 +126,23 @@ module.exports.check_isAuth = (req, res) => {
   }
 };
 
+// Adjust the path to your User model
+
 module.exports.reset_pwd = async (req, res) => {
   try {
     const { email, password } = req.body;
-    User.findOne({ email })
-      .then((user) => {
-        // const salt = bcrypt.genSalt();
-        bcrypt
-          .hash(password, 10)
-          .then((hashPwd) => {
-            User.updateOne(
-              { email: user.email },
-              { password: hashPwd },
-              (err, data) => {
-                if (err) throw err;
-                return res
-                  .status(201)
-                  .send({ msg: "Password reset", success: true });
-              }
-            );
-          })
-          .catch((e) => {
-            return res.status(500).send({ e: "Enable to hashed password" });
-          });
-      })
-      .catch((error) => {
-        return res.status(404).send({ error: "User not found" });
-      });
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const hashPwd = await bcrypt.hash(password, 10);
+    await User.updateOne({ email: user.email }, { password: hashPwd });
+
+    return res.status(201).send({ msg: "Password reset", success: true });
   } catch (error) {
-    return res.status(500).send({ error });
+    return res.status(500).send({ error: "Enable to hashed password" });
   }
 };
 
